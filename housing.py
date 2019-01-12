@@ -42,3 +42,16 @@ from sklearn.preprocessing import Imputer
 imputer = Imputer()
 temp = imputer.fit_transform(housing_X_train_number_only)
 housing_X_train_number_only = pd.DataFrame(temp, columns=housing_X_train_number_only.columns)
+
+
+#transfer text to num
+housing_ocean_1d = housing_X_train['ocean_proximity']
+
+import numpy as np
+housing_ocean = np.reshape(housing_ocean_1d.values, (-1,1))
+
+from sklearn.preprocessing import OneHotEncoder
+encoder = OneHotEncoder()
+housing_ocean_one_hot_encoded = encoder.fit_transform(housing_ocean)
+
+pass
