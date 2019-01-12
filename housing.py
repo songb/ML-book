@@ -27,26 +27,10 @@ def load_data(path=HOUSING_PATH):
 housing = load_data()
 
 
-# import matplotlib.pyplot as plt
-# housing.hist(bins=50, figsize=(20,15))
-# plt.show()
+from sklearn.model_selection import train_test_split
 
-import numpy as np
+train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42)
 
-# For illustration only. Sklearn has train_test_split()
-def split_train_test(data, test_ratio):
-    shuffled_indices = np.random.permutation(len(data))
-    test_set_size = int(len(data) * test_ratio)
-    test_indices = shuffled_indices[:test_set_size]
-    train_indices = shuffled_indices[test_set_size:]
-    return data.iloc[train_indices], data.iloc[test_indices]
+housing_X_train = train_set.drop("median_house_value", axis=1)
 
-train_set, test_set = split_train_test(housing, 0.2)
-
-from sklearn.model_selection import StratifiedShuffleSplit
-
-housing["income_cat"] = np.ceil(housing["median_income"] / 1.5)
-# Label those above 5 as 5
-housing["income_cat"].where(housing["income_cat"] < 5, 5.0, inplace=True)
-
-from pandas.plotting import scatter_matrix
+housing_X_lable = train_set["median_house_value"]
