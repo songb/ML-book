@@ -33,4 +33,12 @@ train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42)
 
 housing_X_train = train_set.drop("median_house_value", axis=1)
 
-housing_X_lable = train_set["median_house_value"]
+housing_X_lable = train_set["median_house_value"].copy()
+
+housing_X_train_number_only = housing_X_train.drop('ocean_proximity', axis=1)
+
+from sklearn.preprocessing import Imputer
+
+imputer = Imputer()
+temp = imputer.fit_transform(housing_X_train_number_only)
+housing_X_train_number_only = pd.DataFrame(temp, columns=housing_X_train_number_only.columns)
