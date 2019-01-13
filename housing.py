@@ -82,11 +82,28 @@ class KeepNumOnly(BaseEstimator, TransformerMixin):
         return X.drop('ocean_proximity', axis=1)
 
 
+class TextColumns(BaseEstimator, TransformerMixin):
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        return np.reshape(X['ocean_proximity'].values, (-1,1))
+
+
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 num_pipeline = Pipeline([('num_only', KeepNumOnly()), ('imputer', Imputer(strategy='median')), ('add_attr', AddAttr()),
                          ('scaler', StandardScaler())])
 
-housing_thru_pipeline = num_pipeline.fit_transform(housing_X_train)
+text_pipeline = Pipeline([('text', TextColumns()), ('encoder', OneHotEncoder())])
+
+from sklearn.pipeline import FeatureUnion
+unioned_pipeline = FeatureUnion(transformer_list=[('number', num_pipeline), ('text', text_pipeline)])
+
+
+final_housing_data = pd.DataFrame(unioned_pipeline.fit_transform(housing_X_train).toarray())
+
+
+
 pass
