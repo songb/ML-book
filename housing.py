@@ -38,6 +38,10 @@ housing_X_train = train_set.drop("median_house_value", axis=1)
 
 housing_X_lable = train_set["median_house_value"].copy()
 
+
+housing_X_test = test_set.drop('median_house_value', axis=1)
+housing_y_test = test_set['median_house_value']
+
 housing_X_train_number_only = housing_X_train.drop('ocean_proximity', axis=1)
 
 from sklearn.preprocessing import Imputer
@@ -103,6 +107,33 @@ unioned_pipeline = FeatureUnion(transformer_list=[('number', num_pipeline), ('te
 
 
 final_housing_data = pd.DataFrame(unioned_pipeline.fit_transform(housing_X_train).toarray())
+
+
+housing_test_processed = pd.DataFrame(unioned_pipeline.fit_transform(housing_X_test).toarray())
+
+
+def train_test(train_X, train_y, test_X, test_y, model):
+    model.fit(train_X, train_y)
+    pred = model.predict(test_X)
+    rmse = np.sqrt(mean_squared_error(test_y,pred))
+    print(rmse)
+    return rmse
+
+from functools import partial
+pf = partial(train_test, final_housing_data, housing_X_lable, housing_test_processed, housing_y_test)
+#training linear regression
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+linear_regression = LinearRegression()
+pf(linear_regression)
+
+
+#training decision tree
+from sklearn.tree import DecisionTreeRegressor
+dt = DecisionTreeRegressor()
+pf(dt)
+
+
 
 
 
