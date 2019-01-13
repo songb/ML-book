@@ -116,7 +116,7 @@ def train_test(train_X, train_y, test_X, test_y, model):
     model.fit(train_X, train_y)
     pred = model.predict(test_X)
     rmse = np.sqrt(mean_squared_error(test_y,pred))
-    print(rmse)
+    print(model, rmse)
     return rmse
 
 from functools import partial
@@ -135,6 +135,3 @@ pf(dt)
 
 
 
-
-
-pass
