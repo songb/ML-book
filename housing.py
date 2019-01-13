@@ -3,29 +3,32 @@ import tarfile
 from six.moves import urllib
 
 DOWNLOAD = "https://raw.githubusercontent.com/ageron/handson-ml/master/datasets/housing/housing.tgz"
-HOUSING_PATH= os.path.join("datasets", "housing")
+HOUSING_PATH = os.path.join("datasets", "housing")
+
 
 def fetching_data(url=DOWNLOAD, path=HOUSING_PATH):
     if not os.path.isdir(path):
         os.makedirs(path)
 
-    fpath = os.path.join(path,  "housing.tgz")
+    fpath = os.path.join(path, "housing.tgz")
 
     urllib.request.urlretrieve(url, fpath)
     tgzf = tarfile.open(fpath)
     tgzf.extractall(path=path)
     tgzf.close()
 
+
 fetching_data()
 
 import pandas as pd
+
 
 def load_data(path=HOUSING_PATH):
     csv = os.path.join(path, "housing.csv")
     return pd.read_csv(csv)
 
-housing = load_data()
 
+housing = load_data()
 
 from sklearn.model_selection import train_test_split
 
@@ -39,19 +42,51 @@ housing_X_train_number_only = housing_X_train.drop('ocean_proximity', axis=1)
 
 from sklearn.preprocessing import Imputer
 
+# replace empty with mean
 imputer = Imputer()
 temp = imputer.fit_transform(housing_X_train_number_only)
 housing_X_train_number_only = pd.DataFrame(temp, columns=housing_X_train_number_only.columns)
 
-
-#transfer text to num
+# transfer text to num
 housing_ocean_1d = housing_X_train['ocean_proximity']
 
 import numpy as np
-housing_ocean = np.reshape(housing_ocean_1d.values, (-1,1))
+
+housing_ocean = np.reshape(housing_ocean_1d.values, (-1, 1))
 
 from sklearn.preprocessing import OneHotEncoder
+
 encoder = OneHotEncoder()
 housing_ocean_one_hot_encoded = encoder.fit_transform(housing_ocean)
 
+
+from sklearn.base import BaseEstimator, TransformerMixin
+
+
+class AddAttr(BaseEstimator, TransformerMixin):
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        room_per_household = X[:, 3] / X[:, 6]
+        pop_per_household = X[:, 5] / X[:, 6]
+        bedroom_per_room = X[:, 4] / X[:, 3]
+        return np.c_[X, room_per_household, pop_per_household, bedroom_per_room]
+
+
+class KeepNumOnly(BaseEstimator, TransformerMixin):
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        return X.drop('ocean_proximity', axis=1)
+
+
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+num_pipeline = Pipeline([('num_only', KeepNumOnly()), ('imputer', Imputer(strategy='median')), ('add_attr', AddAttr()),
+                         ('scaler', StandardScaler())])
+
+housing_thru_pipeline = num_pipeline.fit_transform(housing_X_train)
 pass
