@@ -133,5 +133,23 @@ from sklearn.tree import DecisionTreeRegressor
 dt = DecisionTreeRegressor()
 pf(dt)
 
+#training polynomial
+from sklearn.preprocessing import PolynomialFeatures
+p2features = PolynomialFeatures(degree=2, include_bias=False)
+p2_housing_data = p2features.fit_transform(final_housing_data)
+p2_housing_test = p2features.fit_transform(housing_test_processed)
 
+train_test(p2_housing_data, housing_X_lable, p2_housing_test, housing_y_test, linear_regression)
 
+#cross_validation
+from sklearn.model_selection import cross_val_score
+score = cross_val_score(linear_regression, final_housing_data, housing_X_lable, cv=10, scoring='neg_mean_squared_error')
+score_rt = np.sqrt(-score)
+print(score_rt)
+
+#grid search
+from sklearn.model_selection import GridSearchCV
+
+from sklearn.svm import SVR
+svr = SVR(kernel='rbf')
+pf(svr)
