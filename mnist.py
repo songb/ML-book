@@ -43,4 +43,35 @@ from sklearn.metrics import precision_recall_curve
 y_score = cross_val_predict(sgd, X_train, y_train_5,cv=3, method='decision_function')
 precision,recall,threshold = precision_recall_curve(y_train_5, y_score)
 
+
+sgd.fit(X_train, y_train)
+print(sgd.predict([X_test[1]]))
+
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+mpl.rc('axes', labelsize=14)
+mpl.rc('xtick', labelsize=12)
+mpl.rc('ytick', labelsize=12)
+
+PROJECT_ROOT_DIR = "."
+CHAPTER_ID = "classification"
+
+def save_fig(fig_id, tight_layout=True):
+    path = os.path.join(PROJECT_ROOT_DIR, "images", CHAPTER_ID, fig_id + ".png")
+    print("Saving figure", fig_id)
+    if tight_layout:
+        plt.tight_layout()
+    plt.savefig(path, format='png', dpi=300)
+
+
+some_digit = X[1]
+some_digit_image = some_digit.reshape(28, 28)
+plt.imshow(some_digit_image, cmap = mpl.cm.binary,
+           interpolation="nearest")
+plt.axis("off")
+
+save_fig("some_digit_plot")
+plt.show()
+
 pass
