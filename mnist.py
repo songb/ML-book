@@ -44,8 +44,8 @@ y_score = cross_val_predict(sgd, X_train, y_train_5,cv=3, method='decision_funct
 precision,recall,threshold = precision_recall_curve(y_train_5, y_score)
 
 
-sgd.fit(X_train, y_train)
-print(sgd.predict([X_test[1]]))
+# sgd.fit(X_train, y_train)
+# print(sgd.predict([X_test[1]]))
 
 
 import matplotlib as mpl
@@ -71,7 +71,29 @@ plt.imshow(some_digit_image, cmap = mpl.cm.binary,
            interpolation="nearest")
 plt.axis("off")
 
-save_fig("some_digit_plot")
-plt.show()
+# save_fig("some_digit_plot")
+# plt.show()
+
+from sklearn.preprocessing import StandardScaler
+stdScaler = StandardScaler()
+X_train_scaled =stdScaler.fit_transform(X_train)
+y_score = cross_val_predict(sgd, X_train, y_train,cv=3)
+cm = confusion_matrix(y_train, y_score)
+row_sum=cm.sum(axis=1, keepdims=True)
+
+
+# KNeighbors model
+from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
+
+kn = KNeighborsClassifier()
+kn.fit(X_train, y_train) #this one never finishes
+y_pred = kn.predict(X_test)
+
+from sklearn.metrics import accuracy_score
+s = accuracy_score(y_test, y_pred)
+
+
+
 
 pass
