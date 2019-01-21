@@ -16,10 +16,10 @@ save_fig("generated_data_plot")
 from sklearn.linear_model import SGDRegressor
 
 
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import Ridge, Lasso
 
-X_total = 5*np.random.rand(500,1)
-y_total = 9+3*X_total+np.random.rand(500,1)/2
+X_total = 5*np.random.rand(5000,1)
+y_total = 9+3*X_total+np.random.rand(5000,1)/2
 
 from sklearn.model_selection import train_test_split
 X_train_raw, X_test, y_train, y_test = train_test_split(X_total, y_total, test_size=0.2)
@@ -34,11 +34,13 @@ def verify(model, alpha, X_train, y_train, X_test, y_test):
     model.fit(X_train, y_train)
     y_predict = model.predict(X_test)
     err = np.sqrt(mean_squared_error(y_test, y_predict))
-    print("alpha=",alpha, " err=", err)
+    print("alpha=",alpha, " err=", err, " coef=", model.coef_, " intercept= ", model.intercept_)
 
 for i in [0, 0.1, 1, 10]:
     ridge = Ridge(i)
     verify(ridge, i, X_scaled, y_train, X_test, y_test)
 
-
+for i in [0, 0.1, 1, 10]:
+    lasso = Lasso(i)
+    verify(lasso, i, X_scaled, y_train, X_test, y_test)
 pass
