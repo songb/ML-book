@@ -43,4 +43,25 @@ for i in [0, 0.1, 1, 10]:
 for i in [0, 0.1, 1, 10]:
     lasso = Lasso(i)
     verify(lasso, i, X_scaled, y_train, X_test, y_test)
+
+
+from sklearn.linear_model import LogisticRegression
+
+
+from sklearn import datasets
+(X,y)=datasets.load_iris(True)
+
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
+
+from sklearn.svm import LinearSVC
+from sklearn.pipeline import Pipeline
+
+pipeline = Pipeline([("scaler", StandardScaler()), ("svc", LinearSVC(loss='hinge'))])
+pipeline.fit(X_train, y_train)
+
+y_predict=pipeline.predict(X_test)
+
+err=np.sqrt(mean_squared_error(y_test, y_predict))
+print(err)
+
 pass
