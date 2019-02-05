@@ -64,4 +64,38 @@ y_predict=pipeline.predict(X_test)
 err=np.sqrt(mean_squared_error(y_test, y_predict))
 print(err)
 
+
+from sklearn.metrics import accuracy_score
+
+from utils import load_mnist
+X,y=load_mnist()
+
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2, shuffle=True)
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.fit_transform(X_test)
+
+from sklearn.svm import SVC
+from sklearn.model_selection import RandomizedSearchCV
+
+parameter_distribution={
+    "gamma":[0.001, 0.01, 0.1, 1, 10],
+    "C":[0.01, 0.1, 1, 10]
+}
+
+model = SVC()
+
+rscv = RandomizedSearchCV(model, parameter_distribution, cv=3, verbose=2)
+rscv.fit(X_train_scaled[:2000], y_train[:2000])
+
+
+print(rscv.best_estimator_)
+print(rscv.best_score_)
+
+# best_model = SVC(C=1, gamma=0.001)
+# best_model.fit(X_train_scaled[:20000], y_train[:20000])
+# y_pred = best_model.predict(X_test)
+y_pred = rscv.best_estimator_.predict(X_test_scaled)
+print(accuracy_score(y_test, y_pred))
 pass

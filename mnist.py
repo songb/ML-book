@@ -16,13 +16,9 @@ def fetch_mnist(data_home="."):
             copyfileobj(mnist_url, matlab_file)
 
 
+from utils import load_mnist
+X,y = load_mnist()
 
-from scipy.io import loadmat
-fpath = os.path.join(".", 'mldata', 'mnist-original.mat')
-mnist = loadmat(fpath)
-
-X= mnist['data'].transpose()
-y=mnist['label'].transpose()
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
