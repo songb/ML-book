@@ -123,7 +123,6 @@ class DNNClassifier(BaseEstimator, ClassifierMixin):
                             return
 
 
-
 # def eval(X_test, model_path):
 #     tf.reset_default_graph()
 #     graph = tf.Graph()
@@ -140,10 +139,12 @@ class DNNClassifier(BaseEstimator, ClassifierMixin):
 
 
 def eval(X_test, model_path):
+    import os
     sess = tf.Session()
     # First let's load meta graph and restore weights
     saver = tf.train.import_meta_graph('{0}.meta'.format(model_path))
-    saver.restore(sess, tf.train.latest_checkpoint('models/'))
+    path, _ = os.path.split(model_path)
+    saver.restore(sess, tf.train.latest_checkpoint(path))
 
     graph = tf.get_default_graph()
     X = graph.get_tensor_by_name("X:0")
@@ -156,4 +157,3 @@ def eval(X_test, model_path):
 
     y_pred = np.argmax(y_prod, axis=1)
     return y_pred
-
