@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 
+
 def save_fig(fig_id, tight_layout=True):
     path = os.path.join(".", "images", fig_id + ".png")
     print("Saving figure", fig_id)
@@ -17,6 +18,7 @@ def load_mnist():
     X = mnist['data'].transpose()
     y = mnist['label'].transpose()
     return X, y
+
 
 def load_mnist_tf():
     import tensorflow as tf
@@ -36,3 +38,11 @@ def shuffle_batch(X, y, batch_size):
     for batch_idx in np.array_split(rnd_idx, n_batches):
         X_batch, y_batch = X[batch_idx], y[batch_idx]
         yield X_batch, y_batch
+
+
+import pandas as pd
+
+
+def load_data(path, filename):
+    csv = os.path.join(path, filename)
+    return pd.read_csv(csv)
