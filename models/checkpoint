@@ -1,2 +1,2 @@
-model_checkpoint_path: "dnncreator_test"
-all_model_checkpoint_paths: "dnncreator_test"
+model_checkpoint_path: "cnn"
+all_model_checkpoint_paths: "cnn"

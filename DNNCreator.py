@@ -138,7 +138,7 @@ class DNNClassifier(BaseEstimator, ClassifierMixin):
 #             return y_pred
 
 
-def eval(X_test, model_path):
+def eval(X_test, model_path, training=None):
     import os
     sess = tf.Session()
     # First let's load meta graph and restore weights
@@ -149,6 +149,10 @@ def eval(X_test, model_path):
     graph = tf.get_default_graph()
     X = graph.get_tensor_by_name("X:0")
     feed_dict = {X: X_test}
+
+    if training is not None:
+        training_tensor = graph.get_tensor_by_name("training:0")
+        feed_dict[training_tensor]= training
 
     # Now, access the op that you want to run.
     op_to_restore = graph.get_tensor_by_name("y_prob:0")
